@@ -7,7 +7,7 @@
 
 - (void)viewDidLoad {
   
-	[self setCaptureManager:[[[CaptureSessionManager alloc] init] autorelease]];
+	[self setCaptureManager:[[CaptureSessionManager alloc] init]];
   
 	[[self captureManager] addVideoInput];
   
@@ -21,7 +21,6 @@
   UIImageView *overlayImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"overlaygraphic.png"]];
   [overlayImageView setFrame:CGRectMake(30, 100, 260, 200)];
   [[self view] addSubview:overlayImageView];
-  [overlayImageView release];
   
   UIButton *overlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
   [overlayButton setImage:[UIImage imageNamed:@"scanbutton.png"] forState:UIControlStateNormal];
@@ -31,15 +30,15 @@
   
   UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(100, 50, 120, 30)];
   [self setScanningLabel:tempLabel];
-  [tempLabel release];
-	[scanningLabel setBackgroundColor:[UIColor clearColor]];
-	[scanningLabel setFont:[UIFont fontWithName:@"Courier" size: 18.0]];
-	[scanningLabel setTextColor:[UIColor redColor]]; 
-	[scanningLabel setText:@"Scanning..."];
+
+  [scanningLabel setBackgroundColor:[UIColor clearColor]];
+  [scanningLabel setFont:[UIFont fontWithName:@"Courier" size: 18.0]];
+  [scanningLabel setTextColor:[UIColor redColor]];
+  [scanningLabel setText:@"Scanning..."];
   [scanningLabel setHidden:YES];
-	[[self view] addSubview:scanningLabel];	
+  [[self view] addSubview:scanningLabel];
   
-	[[captureManager captureSession] startRunning];
+  [[captureManager captureSession] startRunning];
 }
 
 - (void) scanButtonPressed {
@@ -49,16 +48,6 @@
 
 - (void)hideLabel:(UILabel *)label {
 	[label setHidden:YES];
-}
-
-- (void)didReceiveMemoryWarning {
-  [super didReceiveMemoryWarning];
-}
-
-- (void)dealloc {
-  [captureManager release], captureManager = nil;
-  [scanningLabel release], scanningLabel = nil;
-  [super dealloc];
 }
 
 @end

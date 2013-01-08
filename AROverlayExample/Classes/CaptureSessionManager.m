@@ -16,7 +16,7 @@
 }
 
 - (void)addVideoPreviewLayer {
-	[self setPreviewLayer:[[[AVCaptureVideoPreviewLayer alloc] initWithSession:[self captureSession]] autorelease]];
+	[self setPreviewLayer:[[AVCaptureVideoPreviewLayer alloc] initWithSession:[self captureSession]]];
 	[[self previewLayer] setVideoGravity:AVLayerVideoGravityResizeAspectFill];
   
 }
@@ -42,11 +42,6 @@
 - (void)dealloc {
 
 	[[self captureSession] stopRunning];
-
-	[previewLayer release], previewLayer = nil;
-	[captureSession release], captureSession = nil;
-
-	[super dealloc];
 }
 
 @end
