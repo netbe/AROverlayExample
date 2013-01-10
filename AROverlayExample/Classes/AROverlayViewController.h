@@ -1,11 +1,9 @@
 #import <UIKit/UIKit.h>
 #import "CaptureSessionManager.h"
 
-@interface AROverlayViewController : UIViewController {
-    
-}
+@interface AROverlayViewController : UIViewController 
 
-@property (retain) CaptureSessionManager *captureManager;
-@property (nonatomic, retain) UILabel *scanningLabel;
+@property (nonatomic, strong) CaptureSessionManager *captureManager;
+@property (nonatomic, strong) UILabel *scanningLabel;
 
 @end

@@ -2,8 +2,6 @@
 
 @implementation AROverlayViewController
 
-@synthesize captureManager;
-@synthesize scanningLabel;
 
 - (void)viewDidLoad {
   

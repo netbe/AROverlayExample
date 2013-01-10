@@ -3,8 +3,6 @@
 
 @implementation CaptureSessionManager
 
-@synthesize captureSession;
-@synthesize previewLayer;
 
 #pragma mark Capture Session Configuration
 

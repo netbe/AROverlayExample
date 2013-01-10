@@ -6,9 +6,8 @@
 
 }
 
-@property (retain) AVCaptureVideoPreviewLayer *previewLayer;
-@property (retain) AVCaptureSession *captureSession;
-
+@property (nonatomic, strong) AVCaptureVideoPreviewLayer *previewLayer;
+@property (nonatomic, strong) AVCaptureSession *captureSession;
 - (void)addVideoPreviewLayer;
 - (void)addVideoInput;
 
