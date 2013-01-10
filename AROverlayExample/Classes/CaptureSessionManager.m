@@ -6,17 +6,19 @@
 
 #pragma mark Capture Session Configuration
 
-- (id)init {
-	if ((self = [super init])) {
-		[self setCaptureSession:[[AVCaptureSession alloc] init]];
+- (id)init
+{
+    self = [super init];
+	if (self) {
+		_captureSession = [[AVCaptureSession alloc] init];
 	}
 	return self;
 }
 
-- (void)addVideoPreviewLayer {
-	[self setPreviewLayer:[[AVCaptureVideoPreviewLayer alloc] initWithSession:[self captureSession]]];
-	[[self previewLayer] setVideoGravity:AVLayerVideoGravityResizeAspectFill];
-  
+- (void)addVideoPreviewLayer
+{
+	self.previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
+	self.previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 }
 
 - (void)addVideoInput {
@@ -25,8 +27,8 @@
 		NSError *error;
 		AVCaptureDeviceInput *videoIn = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&error];
 		if (!error) {
-			if ([[self captureSession] canAddInput:videoIn])
-				[[self captureSession] addInput:videoIn];
+			if ([self.captureSession canAddInput:videoIn])
+				[self.captureSession addInput:videoIn];
 			else
 				NSLog(@"Couldn't add video input");		
 		}
