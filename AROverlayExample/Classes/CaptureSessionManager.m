@@ -54,6 +54,7 @@
 
 - (void)addInput:(NSString*)mediaType
 {
+
 	AVCaptureDevice *captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:mediaType];
 	if (captureDevice) {
 		NSError *error;
@@ -62,13 +63,13 @@
 			if ([self.captureSession canAddInput:deviceInput])
 				[self.captureSession addInput:deviceInput];
 			else
-				NSLog(@"Couldn't add %@ input", mediaType);
+                [self notifyErrorMessage:[NSString stringWithFormat:@"Couldn't add %@ input", mediaType]];
 		}
 		else
-			NSLog(@"Couldn't create %@ input", mediaType);
+            [self notifyErrorMessage:[NSString stringWithFormat:@"Couldn't create %@ input", mediaType]];
 	}
 	else
-		NSLog(@"Couldn't create capture device for %@", mediaType);
+        [self notifyErrorMessage:[NSString stringWithFormat:@"Couldn't create capture device for %@", mediaType]];
 }
 
 - (void)startVideo
@@ -84,12 +85,13 @@
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSString *newVideoPath = [[basePath stringByAppendingPathComponent:self.baseFilename] stringByAppendingPathExtension:@"mov"];
+    
     if ([[NSFileManager defaultManager] fileExistsAtPath:newVideoPath]) {
-        NSLog(@"Erasing previous file!");
+        [self notifyWarning:@"Erasing previous file!"];
         NSError* error = nil;
         [[NSFileManager defaultManager] removeItemAtPath:newVideoPath error:&error];
         if (error) {
-            NSLog(@"error %@", [error description]);
+            [self notifyError:error];
             return;
         }
     }
@@ -103,14 +105,45 @@
     [self.movie stopRecording];
 }
 
+#pragma mark - Notifications
+
+- (void)notifyErrorMessage:(NSString*)errorMessage
+{
+    NSError* error = [NSError errorWithDomain:@"capturesessionsmanager"
+                                         code:0
+                                     userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+    [self notifyError:error];
+}
+
+- (void)notifyError:(NSError*)error
+{
+    NSLog(@"ERROR: %@", error.localizedDescription);
+    [[NSNotificationCenter defaultCenter] postNotificationName:kCaptureSessionManagerErrorNotification
+                                                        object:error];
+}
+
+- (void)notifyWarning:(NSString*)message
+{
+    NSLog(@"WARNING: %@", message);
+    [[NSNotificationCenter defaultCenter] postNotificationName:kCaptureSessionManagerWarningNotification
+                                                        object:message];
+}
+
+
+
 #pragma mark - AVCaptureFileOutputRecordingDelegate
 
 - (void)captureOutput:(AVCaptureFileOutput *)captureOutput
 didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
       fromConnections:(NSArray *)connections error:(NSError *)error
 {
-    NSLog(@"error %@", [error description]);
-    NSLog(@"url %@", outputFileURL);
+    if (error) {
+        [self notifyError:error];
+        return;
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kCaptureSessionManagerFileSavedNotification
+                                                        object:outputFileURL];
+
 }
 
 

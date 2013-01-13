@@ -4,6 +4,19 @@
 
 - (void)viewDidLoad
 {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleCaptureManagerStatus:)
+                                                 name:kCaptureSessionManagerWarningNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleCaptureManagerStatus:)
+                                                 name:kCaptureSessionManagerFileSavedNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleCaptureManagerStatus:)
+                                                 name:kCaptureSessionManagerErrorNotification
+                                               object:nil];
+    
 	self.captureManager = [[CaptureSessionManager alloc] init];
     
     [self.captureManager prepare];
@@ -41,7 +54,7 @@
 - (void)scanButtonPressed
 {
 	self.scanningLabel.hidden = NO;
-	[self performSelector:@selector(hideLabel:) withObject:self.scanningLabel afterDelay:2];
+	[self performSelector:@selector(hideLabel:) withObject:self.scanningLabel afterDelay:10];
     [self.captureManager startVideo];
 }
 
@@ -51,5 +64,29 @@
     [self.captureManager stopVideo];
 }
 
+
+- (void)handleCaptureManagerStatus:(NSNotification*)notification
+{
+    NSString* message = nil;
+    if ([notification.name isEqualToString:kCaptureSessionManagerFileSavedNotification]) {
+        NSURL* fileUrl =  notification.object;
+        message = [NSString stringWithFormat:@"video saved at %@", fileUrl];
+
+    }else if ([notification.name isEqualToString:kCaptureSessionManagerErrorNotification]) {
+        NSError* error =  notification.object;
+        message = error.localizedDescription;
+    }else{
+        message = notification.object;
+    }
+        
+    
+    [[[UIAlertView alloc] initWithTitle:nil
+                                message:message
+                               delegate:nil
+                      cancelButtonTitle:@"OK"
+                      otherButtonTitles:nil,
+      nil] show];
+
+}
 @end
 

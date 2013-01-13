@@ -1,6 +1,9 @@
 #import <CoreMedia/CoreMedia.h>
 #import <AVFoundation/AVFoundation.h>
 
+#define kCaptureSessionManagerErrorNotification @"CaptureSessionManagerErrorNotification"
+#define kCaptureSessionManagerWarningNotification @"CaptureSessionManagerWarningNotification"
+#define kCaptureSessionManagerFileSavedNotification @"CaptureSessionManagerFileSavedNotification"
 
 @interface CaptureSessionManager : NSObject<AVCaptureFileOutputRecordingDelegate>
 
